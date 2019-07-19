@@ -1,10 +1,19 @@
 #!/opt/env/bin/ python
 import boto3
+import pprint
 
 from flask import Flask, render_template
 
 
 app = Flask(__name__)
+
+
+HAPPYLAND = 'Happyland Park'
+HAPPYLAND_COUNT = 6
+KILCONA = 'Kilcona Lakes'
+KILCONA_COUNT = 2
+LABARRIERE = 'LaBarriere Disc Golf Course'
+LABARRIERE_COUNT = 2
 
 
 def _read_all_scores(scores_table):
@@ -29,20 +38,27 @@ def _group_scores_per_course(scores):
         else:
             course_scores[key] = [score]
 
-    return {key: sorted(scores, key=lambda score: score['Total']) for key, scores in course_scores.items()}
+    return {key: sorted(scores, key=lambda score: int(score['+/-'])) for key, scores in course_scores.items()}
 
 
 def _trim_scores(course_scores):
     for key, scores in course_scores.items():
-        if 'Happyland Park' in key:
+        if HAPPYLAND in key:
             course_scores[key] = scores[:6]
-        elif 'Kilcona Lakes' in key:
+        elif KILCONA in key:
             course_scores[key] = scores[:2]
-        elif 'LaBarriere Disc Golf Course' in key:
+        elif LABARRIERE in key:
             course_scores[key] = scores[:2]
 
 
 def _get_rankings(course_scores):
+    def _get_player_scores(player_name, player_scores):
+        for course, count in [(HAPPYLAND, HAPPYLAND_COUNT), (KILCONA, KILCONA_COUNT), (LABARRIERE, LABARRIERE_COUNT)]:
+            league_course_rounds = [int(score['+/-']) for key, scores in course_scores.items() if player_name in key and course in key for score in scores]
+            league_course_rounds += ['-'] * (count - len(league_course_rounds))
+
+            player_scores.extend(league_course_rounds)
+
     players = [
         'Justin',
         'CHall',
@@ -51,11 +67,14 @@ def _get_rankings(course_scores):
         'Ryan',
         'Tyler'
     ]
-    rankings = []   
+    rankings = []
 
     for player in players:
-        score = sum([int(score['+/-']) for key, scores in course_scores.items() if player in key for score in scores])
-        rankings.append((player, score))
+        player_scores = [player]
+        player_scores.append(sum([int(score['+/-']) for key, scores in course_scores.items() if player in key for score in scores]))
+        _get_player_scores(player, player_scores)
+        
+        rankings.append(player_scores)
 
     return sorted(rankings, key=lambda x: x[1])   
 
@@ -77,7 +96,7 @@ def home_page():
     course_scores = _group_scores_per_course(_read_all_scores(scores_table))
     _trim_scores(course_scores)
     
-    return render_template('views/scores_table.html', ranked_player_scores=_get_rankings(course_scores))
+    return render_template('scores_table.html', ranked_player_scores=_get_rankings(course_scores))
 
 
 if __name__ == '__main__':
