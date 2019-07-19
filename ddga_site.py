@@ -1,7 +1,7 @@
 #!/opt/env/bin/ python
 import boto3
 
-from flask import Flask
+from flask import Flask, render_template
 
 
 app = Flask(__name__)
@@ -77,7 +77,7 @@ def home_page():
     course_scores = _group_scores_per_course(_read_all_scores(scores_table))
     _trim_scores(course_scores)
     
-    return _generate_response(_get_rankings(course_scores))
+    return render_template('views/scores_table.html', ranked_player_scores=_get_rankings(course_scores))
 
 
 if __name__ == '__main__':

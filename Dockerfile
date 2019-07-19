@@ -13,7 +13,9 @@ RUN /opt/conda/bin/conda create -p /opt/env -y python jinja2 flask boto3 -y && \
     rm -rf /opt/conda
 
 RUN mkdir /opt/ddga_site
-COPY ddga_site.py /opt/ddga_site/ 
+RUN mkdir /opt/ddga_site/views
+COPY ddga_site.py /opt/ddga_site/
+COPY views/scores_table.html views/scores_table.html
 RUN chmod +x /opt/ddga_site/ddga_site.py
 
 ENV APP_SCRIPT=/opt/ddga_site/ddga_site.py
