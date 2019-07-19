@@ -1,0 +1,16 @@
+<html>
+    <head>
+        <title>DDGA League Standings</title>
+    </head>
+    <body>
+        <table>
+            <tr>Player</tr><tr colspan="10">Scores</tr>
+            <tr>Total</tr><tr colspan="6">Happyland Park</tr><tr colspan="2">Kilcona Lakes</tr><tr colspan="2">LaBarriere Disc Golf Course</tr>
+            {% for player_scores in ranked_player_scores %}
+                {% for player_score in player_scores.values() %}
+                    <tr>{{ player_score }}</tr>
+                {% endfor %}
+            {% endfor %}
+        </table>
+    </body>
+</html>

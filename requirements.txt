@@ -1,0 +1,4 @@
+flask
+pylint
+jinja2
+boto3
