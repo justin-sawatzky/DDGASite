@@ -1,3 +1,27 @@
 <html>
-    
+    <head>
+        <title>{{player_name}} Scores by Course</title>
+    </head>
+    <body>
+        <table cellpadding="10" border="1" title="Happyland Park">
+            <tr>
+            {% for header_item in table_headers %}
+                <th>{{ key }}</th>
+            {% endfor %}
+            </tr>
+            {% for course_scores in ranked_player_scores.get(f'{player_name} Happyland Park') %}
+                {% for score in course_scores %}
+                <tr>
+                    {%  %}
+                </tr>    
+                {% endfor %}
+            {% endfor %}
+        </table>
+        <table cellpadding="10" border="1" title="Kilcona Lakes">
+            
+        </table>
+        <table cellpadding="10" border="1" title="LaBarriere Disc Golf Course">
+            
+        </table>
+    </body>
 </html>
