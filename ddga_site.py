@@ -2,6 +2,7 @@
 import boto3
 import pprint
 
+from boto3.dynamodb.conditions import Attr
 from flask import Flask, render_template
 
 
@@ -16,10 +17,13 @@ LABARRIERE = 'LaBarriere Disc Golf Course'
 LABARRIERE_COUNT = 2
 
 
-def _read_all_scores(scores_table):
+def _read_all_scores(scores_table, player_name=None):
     scores = []
 
-    response = scores_table.scan()
+    if player_name:
+        response = scores_table.scan(FilterExpresion=Attr('PlayerName').eq(player_name))
+    else:
+        response = scores_table.scan()
     scores += response['Items']
 
     while 'LastEvaluatedKey' in response:
@@ -96,13 +100,22 @@ def home_page():
     course_scores = _group_scores_per_course(_read_all_scores(scores_table))
     _trim_scores(course_scores)
     
-    return render_template('scores_table.html', ranked_player_scores=_get_rankings(course_scores))
+    return render_template(
+        'scores_table.html', 
+        ranked_player_scores=_get_rankings(course_scores)
+    )
 
 
 @app.route('/scores/<player_name>')
 def player_scores_page(player_name):
-    player_course_scores = {}
-    return render_template('player_scores.html', player_course_scores=player_course_scores)
+    dynamo = boto3.resource('dynamodb', region_name='ca-central-1')
+    scores_table = dynamo.Table('ddga_player_scores')
+
+    return render_template(
+        'player_scores.html', 
+        player_name=player_name,
+        player_course_scores=_group_scores_per_course(_read_all_scores(scores_table))
+    )
 
 
 if __name__ == '__main__':
