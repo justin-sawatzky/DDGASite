@@ -99,5 +99,11 @@ def home_page():
     return render_template('scores_table.html', ranked_player_scores=_get_rankings(course_scores))
 
 
+@app.route('/scores/<player_name>')
+def player_scores_page(player_name):
+    player_course_scores = {}
+    return render_template('player_scores.html', player_course_scores=player_course_scores)
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80, debug=False)
