@@ -80,16 +80,7 @@ def _get_rankings(course_scores):
         
         rankings.append(player_scores)
 
-    return sorted(rankings, key=lambda x: x[1])   
-
-
-def _generate_response(rankings):
-    ranking_str = ''
-
-    for rank in range(len(rankings)):
-        ranking_str += f'<p>{rank+1}) {rankings[rank][0]} {rankings[rank][1]}</p>'
-
-    return f'<html><body>{ranking_str}</body></html>'
+    return sorted(rankings, key=lambda x: x[1])
 
 
 @app.route('/')
