@@ -1,27 +1,12 @@
+{% import 'course_score_table.html' as cst %}
+
 <html>
     <head>
-        <title>{{player_name}} Scores by Course</title>
+        <title>{{player_name}}'s Scores by Course</title>
     </head>
     <body>
-        <table cellpadding="10" border="1" title="Happyland Park">
-            <tr>
-            {% for header_item in table_headers %}
-                <th>{{ key }}</th>
-            {% endfor %}
-            </tr>
-            {% for course_scores in ranked_player_scores.get(f'{player_name} Happyland Park') %}
-                {% for score in course_scores %}
-                <tr>
-                    {%  %}
-                </tr>    
-                {% endfor %}
-            {% endfor %}
-        </table>
-        <table cellpadding="10" border="1" title="Kilcona Lakes">
-            
-        </table>
-        <table cellpadding="10" border="1" title="LaBarriere Disc Golf Course">
-            
-        </table>
+        <p>{{ cst.generate_table(headers, happyland_course_scores, "Happyland Park") }}</p>
+        <p>{{ cst.generate_table(headers, kilcona_course_scores, "Kilcona Lakes") }}</p>
+        <p>{{ cst.generate_table(headers, labarriere_course_scores, "LaBarriere Disc Golf Course") }}</p>
     </body>
 </html>

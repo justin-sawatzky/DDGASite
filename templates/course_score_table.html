@@ -1,5 +1,6 @@
 {% macro generate_table(headers, course_scores, course_name) %}
-<table cellpadding="10" border="1" title="{{ course_name }}">
+<table cellpadding="10" border="1">
+    <tr><th colspan="21">{{ course_name }}</th></tr>
     <tr>
     {% for header in headers %}
         <th>{{ header }}</th>

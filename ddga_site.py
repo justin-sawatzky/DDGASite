@@ -102,10 +102,42 @@ def player_scores_page(player_name):
     dynamo = boto3.resource('dynamodb', region_name='ca-central-1')
     scores_table = dynamo.Table('ddga_player_scores')
 
+    course_scores = _group_scores_per_course(_read_all_scores(scores_table))
+    happyland_course_scores = course_scores[f'{player_name} {HAPPYLAND}']
+    kilcona_course_scores = course_scores[f'{player_name} {KILCONA}']
+    labarriere_course_scores = course_scores[f'{player_name} {LABARRIERE}']
+
+    headers = [
+        'Date',
+        'Total',
+        '+/-',
+        'Hole1',
+        'Hole2',
+        'Hole3',
+        'Hole4',
+        'Hole5',
+        'Hole6',
+        'Hole7',
+        'Hole8',
+        'Hole9',
+        'Hole10',
+        'Hole11',
+        'Hole12',
+        'Hole13',
+        'Hole14',
+        'Hole15',
+        'Hole16',
+        'Hole17',
+        'Hole18'
+    ]
+    
     return render_template(
         'player_scores.html', 
         player_name=player_name,
-        player_course_scores=_group_scores_per_course(_read_all_scores(scores_table))
+        headers=headers,
+        happyland_course_scores=happyland_course_scores,
+        kilcona_course_scores=kilcona_course_scores,
+        labarriere_course_scores=labarriere_course_scores
     )
 
 
